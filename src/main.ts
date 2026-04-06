@@ -10,8 +10,8 @@ export const API_KEY = "AIzaSyDgIDCWpWFUeOyx0g8wuxbM-HDulR3saxk";
 export const SHEET_ID = "1n2JIJXDuPiv5y9IbKyQrROachf2W4pz8ADWcptsfLKc"
 const BASE = (import.meta as any)?.env?.BASE_URL ?? "./";
 
-if (!API_KEY) { throw new Error("API_KEY is not defined in .env");}
-if (!SHEET_ID) { throw new Error("SHEET_ID is not defined in .env");}
+if (!API_KEY) { throw new Error("API_KEY is not defined in .env"); }
+if (!SHEET_ID) { throw new Error("SHEET_ID is not defined in .env"); }
 console.log("API_KEY and SHEET_ID loaded successfully");
 
 
@@ -227,7 +227,7 @@ export function CompileAndAverage(
     if (allNumeric) {
       const avg = nums.reduce((sum, n) => sum + n, 0) / nums.length;
       result[key] = avg.toFixed(2).replace(/\.00$/, "");
-    } 
+    }
     else {
       // default string logic
       const counts: Record<string, number> = {};
@@ -250,19 +250,30 @@ export function CompileAndAverage(
 
 // ===== MAIN FETCH =====
 export async function FetchSheetData(
-  requestInput: SheetRequest | null
+  requestInput: SheetRequest
 ): Promise<Record<string, string>[] | null> {
-  try {
-    const request = requestInput ?? {};
-    const sheetID = request.sheetID ?? SHEET_ID;
-    const sheetName = request.sheetName ?? SHEET_NAME;
-    const APIKey = request.APIkey ?? API_KEY;
-    const range = request.range ?? RANGE;
-    const url =
-      CUSTOM_URL ??
-      `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${sheetName}!${range}?key=${APIKey}`;
 
-    // Try network first
+  const url = FormatUrl(requestInput);
+  const parsed = await FetchSheetDataFromNetwork(url);
+  
+  if (parsed) {
+    await SetCachedSheetData(url, parsed); // Update cache with fresh data
+    return parsed;
+  }
+
+  const cachedData = await GetCachedSheetData(url);
+
+  if (cachedData) return cachedData;
+
+  return null;
+}
+async function FetchSheetDataFromNetwork(requestInput: SheetRequest | string): Promise<Record<string, string>[] | null> {
+  try {
+
+    const url = (typeof requestInput === "string")
+      ? requestInput
+      : FormatUrl(requestInput);
+
     const response = await fetch(url);
 
     if (!response.ok) {
@@ -270,60 +281,48 @@ export async function FetchSheetData(
     }
 
     const data: SheetResponse = await response.json();
-    const parsed = rowsToObjects(data.values, request.filter ?? null);
 
-    // ✅ Cache the JSON response for offline use
-    if ("caches" in window) {
-      const cache = await caches.open("sheet-data-cache");
-      const blob = new Blob([JSON.stringify(parsed)], { type: "application/json" });
-      const responseToCache = new Response(blob, { status: 200, statusText: "OK" });
-      await cache.put(url, responseToCache);
-    }
+    const filter: Filter | null = typeof requestInput === "object" ? requestInput.filter ?? null : null;
 
-    return parsed;
-
+    return rowsToObjects(data.values, filter);
   } catch (err) {
-    console.error("Sheet fetch failed:", err);
-
-    // Try to use cached version
-    if ("caches" in window) {
-      try {
-        const cache = await caches.open("sheet-data-cache");
-        const cachedResponse = await cache.match(
-          CUSTOM_URL ??
-          `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!${RANGE}?key=${API_KEY}`
-        );
-        if (cachedResponse) {
-          const cachedData = await cachedResponse.json();
-          console.log("Using cached sheet data.");
-          return cachedData as Record<string, string>[];
-        }
-      } catch (cacheErr) {
-        console.warn("No cached sheet data available:", cacheErr);
-      }
-    }
-
-    const output = document.getElementById("output");
-    if (output) {
-      output.textContent = "Failed to load sheet data.";
-    }
-
+    console.error("Network fetch failed:", err);
     return null;
   }
 }
-
-
-// ===== DISPLAY =====
-
-function display(data: unknown) {
-
-  const output = document.getElementById("output");
-
-  if (!output) return;
-
-  output.textContent = JSON.stringify(data, null, 2);
+function FormatUrl(request: SheetRequest): string {
+  const sheetID = request.sheetID ?? SHEET_ID;
+  const sheetName = request.sheetName ?? SHEET_NAME;
+  const APIKey = request.APIkey ?? API_KEY;
+  const range = request.range ?? RANGE;
+  return `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${sheetName}!${range}?key=${APIKey}`;
 }
-
+async function SetCachedSheetData(url: string, data: Record<string, string>[]) {
+  // Cache the JSON response for offline use
+  if ("caches" in window) {
+    const cache = await caches.open("sheet-data-cache");
+    const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+    const responseToCache = new Response(blob, { status: 200, statusText: "OK" });
+    await cache.put(url, responseToCache);
+  }
+}
+async function GetCachedSheetData(url: string): Promise<Record<string, string>[] | null> {
+  // Try to use cached version
+  if ("caches" in window) {
+    try {
+      const cache = await caches.open("sheet-data-cache");
+      const cachedResponse = await cache.match(url);
+      if (cachedResponse) {
+        const cachedData = await cachedResponse.json();
+        console.log("Using cached sheet data.");
+        return cachedData as Record<string, string>[];
+      }
+    } catch (cacheErr) {
+      console.warn("No cached sheet data available:", cacheErr);
+    }
+  }
+  return null;
+}
 // ===== CANVAS =====
 // ===== LOAD IMAGE =====
 function loadBackgroundImage(src: string = BASE + 'background.png'): Promise<HTMLImageElement> {
@@ -359,7 +358,7 @@ export function DrawPaths(
   if (!ctx || paths.length === 0) return;
 
   paths.forEach(path => {
-    DrawPolyLineWithGradiant(path, ctx, pathData??null);
+    DrawPolyLineWithGradiant(path, ctx, pathData ?? null);
   });
 }
 
@@ -384,20 +383,42 @@ export function ImportAndDrawPath(teamNumber: number = -1, pathData: PathData | 
 
   FetchSheetData(request).then(i =>
     DrawPaths(
-      i?.map(x => DecodePolyline(x["Autonomous Path"] ?? "")) || [],
+      FormatAutonomousPaths(i),
       pathData
     )
   );
 }
+export function ImportAndDrawPathFromCache(teamNumber: number = -1, pathData: PathData | null = null) {
+  if (teamNumber === -1) {
+    return;
+  }
+  const request: SheetRequest = {
+    range: RANGE,
+    APIkey: API_KEY,
+    sheetID: SHEET_ID,
+    sheetName: SHEET_NAME,
+    filter: { key: TEAMNUMBERHEADER, value: teamNumber },
+  };
+
+  GetCachedSheetData(FormatUrl(request)).then(i =>
+    DrawPaths(
+      FormatAutonomousPaths(i),
+      pathData
+    )
+  );
+}
+function FormatAutonomousPaths(records: Record<string, string>[] | null): VertexPoint[][] {
+  return records?.map(x => DecodePolyline(x["Autonomous Path"] ?? "")) || [];
+}
 
 // ===== DISPLAY PANEL =====
-const displayData: Record<string,string> = {};
+const displayData: Record<string, string> = {};
 
-export function SetDisplayValue(title:string,value:string){
+export function SetDisplayValue(title: string, value: string) {
   displayData[title] = value;
 }
 
-export function GetDisplayData(){
+export function GetDisplayData() {
   return displayData;
 }
 
