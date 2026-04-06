@@ -249,7 +249,9 @@ export function CompileAndAverage(
 }
 
 // ===== MAIN FETCH =====
-export async function FetchSheetData(requestInput: SheetRequest | null): Promise<Record<string, string>[] | null> {
+export async function FetchSheetData(
+  requestInput: SheetRequest | null
+): Promise<Record<string, string>[] | null> {
   try {
     const request = requestInput ?? {};
     const sheetID = request.sheetID ?? SHEET_ID;
@@ -260,6 +262,7 @@ export async function FetchSheetData(requestInput: SheetRequest | null): Promise
       CUSTOM_URL ??
       `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${sheetName}!${range}?key=${APIKey}`;
 
+    // Try network first
     const response = await fetch(url);
 
     if (!response.ok) {
@@ -267,17 +270,40 @@ export async function FetchSheetData(requestInput: SheetRequest | null): Promise
     }
 
     const data: SheetResponse = await response.json();
-
     const parsed = rowsToObjects(data.values, request.filter ?? null);
+
+    // ✅ Cache the JSON response for offline use
+    if ("caches" in window) {
+      const cache = await caches.open("sheet-data-cache");
+      const blob = new Blob([JSON.stringify(parsed)], { type: "application/json" });
+      const responseToCache = new Response(blob, { status: 200, statusText: "OK" });
+      await cache.put(url, responseToCache);
+    }
 
     return parsed;
 
   } catch (err) {
-
     console.error("Sheet fetch failed:", err);
 
-    const output = document.getElementById("output");
+    // Try to use cached version
+    if ("caches" in window) {
+      try {
+        const cache = await caches.open("sheet-data-cache");
+        const cachedResponse = await cache.match(
+          CUSTOM_URL ??
+          `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!${RANGE}?key=${API_KEY}`
+        );
+        if (cachedResponse) {
+          const cachedData = await cachedResponse.json();
+          console.log("Using cached sheet data.");
+          return cachedData as Record<string, string>[];
+        }
+      } catch (cacheErr) {
+        console.warn("No cached sheet data available:", cacheErr);
+      }
+    }
 
+    const output = document.getElementById("output");
     if (output) {
       output.textContent = "Failed to load sheet data.";
     }
