@@ -1,14 +1,24 @@
 {
+  "name": "my-project",
+  "version": "0.0.1",
+  "dependencies": {
+    "vite": "^4.0.0"
+  },
   "devDependencies": {
     "@types/node": "^25.5.2",
     "dotenv": "^17.4.1",
     "gh-pages": "^6.3.0",
-    "typescript": "^6.0.2"
+    "typescript": "^6.0.2",
+    "vite-plugin-pwa": "^0.19.8"
   },
   "scripts": {
     "build": "tsc",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "homepage": "https://yusufgood0.github.io/HeatmapScout/"
+    "homepage": "https://yusufgood0.github.io/HeatmapScout/",
+    
+    "dev": "vite",
+    "preview": "vite preview"
   }
+  
 }

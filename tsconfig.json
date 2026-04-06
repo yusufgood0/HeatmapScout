@@ -1,14 +1,15 @@
 {
   // Visit https://aka.ms/tsconfig to read more about this file
+  
   "compilerOptions": {
     // File Layout
-    "rootDir": "./src",
+    "rootDir": ".",
     "outDir": "./dist",
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "module": "ES6",
-    "target": "ES6",
+    // "module": "ES6",
+    // "target": "ES6",
     "lib": ["ES2017", "DOM"],  
     "types": ["node"],
     // For nodejs:
@@ -41,5 +42,17 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-  }
+    
+
+    "target": "ESNext",
+    "module": "ESNext",
+    // "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    // "baseUrl": "./src",
+    "paths": {
+      "*": ["./src/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/global.d.ts"]
 }

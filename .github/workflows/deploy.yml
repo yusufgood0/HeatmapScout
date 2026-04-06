@@ -48,6 +48,8 @@ jobs:
           keep_history: false  # optional, keeps gh-pages clean
 
       # 8. Inject API key into config.ts for runtime access
-      - name: Inject API key
-        run: |
-          echo "export const API_KEY = '${{ secrets.API_KEY }}';" > src/config.ts
+      - name: Build project
+        run: npm run build
+        env:
+          VITE_API_KEY: ${{ secrets.API_KEY }}
+          VITE_SHEET_ID: ${{ secrets.SHEET_ID }}
