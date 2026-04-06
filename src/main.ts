@@ -45,7 +45,7 @@ export interface VertexPoint {
 let translations: any;
 
 async function loadTranslations() {
-  translations = await fetch("../public/translations.json").then(r => r.json());
+  translations = await fetch("../translations.json").then(r => r.json());
   console.log("Translations loaded:", translations);
 }
 export function GetTranslations() {
