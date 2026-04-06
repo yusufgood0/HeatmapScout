@@ -176,7 +176,7 @@ canvas {
 </style>
 </head>
 <body>
-  <h1 id="AppTitle">HeatmapScout v1.0.3</h1>
+  <h1 id="AppTitle">HeatmapScout v1.0.4</h1>
   <h2 id="teamTitle">Enter Team Number</h2>
 
   <!-- Horizontal control panel -->
@@ -237,7 +237,7 @@ canvas {
       records.forEach(record => {
         Object.entries(record).forEach(([title, value]) => {
           let translations = GetTranslations();
-          if (!translations?.display?.[title] || title.trim() === "" || data.trim() === "") return;
+          if ((!translations?.display?.[title]) || title.trim() === "") return;
 
           const item = document.createElement("div");
           item.className = "infoItem";
