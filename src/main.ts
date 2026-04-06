@@ -1,5 +1,6 @@
-import dotenv from "dotenv";
-dotenv.config(); // loads variables from .env into process.env
+// disabled as it confuses github's secret scanning. Just remember to create a .env file with API_KEY and SHEET_ID defined when running this locally.
+// import dotenv from "dotenv";
+// dotenv.config(); // loads variables from .env into process.env
 
 const API_KEY = process.env.API_KEY;
 const SHEET_ID = process.env.SHEET_ID;
