@@ -176,8 +176,8 @@ canvas {
 </style>
 </head>
 <body>
-
-  <h1 id="teamTitle">Enter Team Number</h1>
+  <h1 id="AppTitle">HeatmapScout v1.0.0</h1>
+  <h2 id="teamTitle">Enter Team Number</h2>
 
   <!-- Horizontal control panel -->
   <div class="controls">
@@ -290,7 +290,7 @@ canvas {
 
 
       opacitySlider.addEventListener('input', () => {
-        opacityValue.textContent = opacitySlider.value;
+        opacityValue.textContent = opacitySlider.value.toFixed(2);
       });
       title.textContent = `Team ${request.filter.value}`;
       document.title = `Team ${request.filter.value}`;
