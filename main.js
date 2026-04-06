@@ -29,7 +29,7 @@ const CUSTOM_URL = null;
 let translations;
 function loadTranslations() {
     return __awaiter(this, void 0, void 0, function* () {
-        translations = yield fetch("../public/translations.json").then(r => r.json());
+        translations = yield fetch("../translations.json").then(r => r.json());
         console.log("Translations loaded:", translations);
     });
 }
