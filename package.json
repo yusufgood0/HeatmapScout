@@ -2,6 +2,7 @@
   "name": "my-project",
   "version": "0.0.1",
   "dependencies": {
+    "rm": "^0.1.8",
     "vite": "^4.0.0"
   },
   "devDependencies": {
@@ -16,9 +17,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "homepage": "https://yusufgood0.github.io/HeatmapScout/",
-    
     "dev": "vite",
     "preview": "vite preview"
   }
-  
 }
