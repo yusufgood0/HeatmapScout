@@ -176,7 +176,7 @@ canvas {
 </style>
 </head>
 <body>
-  <h1 id="AppTitle">HeatmapScout v1.0.9</h1>
+  <h1 id="AppTitle">HeatmapScout v1.0.10</h1>
   <h2 id="teamTitle">Enter Team Number</h2>
 
   <!-- Horizontal control panel -->
@@ -253,7 +253,7 @@ canvas {
             const lineElem = document.createElement("div");
             if (line.includes(": ")) {
               const [key, val] = line.split(": ");
-              const displayKey = translations.options[title][key] || key;
+              const displayKey = translations?.options?.[title]?.[key] || key;
               if (!displayKey) return; // skip if no translation
               lineElem.textContent = `${displayKey}: ${val}`;
             } else {
