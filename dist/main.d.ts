@@ -1,9 +1,9 @@
 interface SheetRequest {
-    range?: string | null;
-    APIkey?: string | null;
-    sheetID?: string | null;
-    sheetName?: string | null;
-    filter?: Filter | null;
+    range?: string | undefined;
+    APIkey?: string | undefined;
+    sheetID?: string | undefined;
+    sheetName?: string | undefined;
+    filter?: Filter | undefined;
 }
 interface Filter {
     key: string;

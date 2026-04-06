@@ -7,8 +7,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const SHEET_ID = "1n2JIJXDuPiv5y9IbKyQrROachf2W4pz8ADWcptsfLKc";
-const API_KEY = "AIzaSyDgIDCWpWFUeOyx0g8wuxbM-HDulR3saxk";
+import dotenv from "dotenv";
+dotenv.config(); // loads variables from .env into process.env
+const API_KEY = process.env.API_KEY;
+const SHEET_ID = process.env.SHEET_ID;
+if (!API_KEY) {
+    throw new Error("API_KEY is not defined in .env");
+}
+if (!SHEET_ID) {
+    throw new Error("SHEET_ID is not defined in .env");
+}
+console.log("API_KEY and SHEET_ID loaded successfully");
 const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Sheet1?key=${API_KEY}`;
 const SHEET_NAME = "RawScouterData";
 const RANGE = "A1:AA"; // change as needed
