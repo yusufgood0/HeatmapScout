@@ -306,11 +306,14 @@ canvas {
     
     opacitySlider.addEventListener('input', () => {
         opacityValue.textContent = parseFloat(opacitySlider.value).toFixed(2);
-        ImportAndDrawPathFromCache({
-          color1: startColorInput.value,
-          color2: endColorInput.value,
-          opacity: parseFloat(opacitySlider.value)
-        });
+
+        if (input.value){
+          ImportAndDrawPathFromCache(input.value, {
+            color1: startColorInput.value,
+            color2: endColorInput.value,
+            opacity: parseFloat(opacitySlider.value)
+          });
+        }
       });
 
     
