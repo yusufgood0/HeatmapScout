@@ -51,7 +51,7 @@
     "forceConsistentCasingInFileNames": true,
     // "baseUrl": "./src",
     "paths": {
-      "*": ["./dist/*"]
+      "*": ["./dist/*"] 
     }
   },
   "include": ["src/**/*.ts", "config.ts", "src/config.ts.hidden"],
