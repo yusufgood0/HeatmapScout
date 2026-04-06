@@ -176,7 +176,7 @@ canvas {
 </style>
 </head>
 <body>
-  <h1 id="AppTitle">HeatmapScout v1.1.0</h1>
+  <h1 id="AppTitle">HeatmapScout v1.1.1</h1>
   <h2 id="teamTitle">Enter Team Number</h2>
 
   <!-- Horizontal control panel -->
@@ -213,6 +213,9 @@ canvas {
   </div>
 
   <script type="module">
+    
+
+
     import { ImportAndDrawPath } from './src/main.js';
     import { ClearCanvas } from './src/main.js';
     import { GetDisplayData } from './src/main.js'; // NEW: function returning dictionary
@@ -301,22 +304,25 @@ canvas {
       title.textContent = `Team ${request.filter.value}`;
       document.title = `Team ${request.filter.value}`;
     });
-    button.click(); // Trigger initial load with default team number
+    button.click(); // Trigger initial load to chache data and show something on first visit
 
+    
     opacitySlider.addEventListener('input', () => {
         opacityValue.textContent = parseFloat(opacitySlider.value).toFixed(2);
       });
-
+    // Register service worker for offline & homescreen
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./service-worker.js')
+        .then(reg => console.log('Service worker registered', reg).and(registration => {
+          button.click();
+        }))
+        .catch(err => console.log('Service worker failed', err));
+    }
     
   </script>
   
   <script>
-  // Register service worker for offline & homescreen
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./service-worker.js')
-      .then(reg => console.log('Service worker registered', reg))
-      .catch(err => console.log('Service worker failed', err));
-  }
+  
 </script>
 </body>
 </html>
