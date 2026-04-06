@@ -22,8 +22,6 @@ const RANGE = "A1:AA"; // change as needed
 const TEAMNUMBERHEADER = "Team Number";
 const LINE_WIDTH = 20;
 const IMAGE_SCALE = 1200 / 800;
-// Optional: override full URL (leave null to auto-build)
-const CUSTOM_URL = null;
 let translations;
 async function loadTranslations() {
     translations = await fetch(BASE + 'translations.json').then(r => r.json());
@@ -248,8 +246,8 @@ function loadBackgroundImage(src = BASE + 'background.png') {
     });
 }
 // ===== REFRESH CANVAS =====
-export function ClearCanvas() {
-    const canvas = document.getElementById("myCanvas");
+export function ClearCanvas(Inputcanvas = null) {
+    const canvas = Inputcanvas || document.getElementById("myCanvas");
     const ctx = canvas.getContext("2d");
     if (!canvas || !ctx)
         return;
@@ -265,10 +263,22 @@ export function DrawPaths(paths, pathData) {
     const ctx = canvas.getContext("2d");
     if (!ctx || paths.length === 0)
         return;
-    ClearCanvas();
+    // Create offscreen canvas
+    const tempCanvas = document.createElement("canvas");
+    tempCanvas.width = canvas.width;
+    tempCanvas.height = canvas.height;
+    const tempCtx = tempCanvas.getContext("2d");
+    if (!tempCtx)
+        return;
+    // Clear temp canvas
+    ClearCanvas(tempCanvas);
+    // Draw everything to temp canvas
     paths.forEach(path => {
-        DrawPolyLineWithGradiant(path, ctx, pathData ?? null);
+        DrawPolyLineWithGradiant(path, tempCtx, pathData ?? null);
     });
+    // Copy temp canvas to real canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(tempCanvas, 0, 0);
 }
 // ===== INIT =====
 export function ImportAndDrawPath(teamNumber = -1, pathData = null) {
