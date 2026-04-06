@@ -3,11 +3,11 @@
  import dotenv from "dotenv";
  dotenv.config(); // loads variables from .env into process.env
 */
-import { API_KEY, SHEET_ID } from "./config";
+// import { API_KEY, SHEET_ID } from "./config";
 
 // or, if using plain TS with a custom build script:
-// export const API_KEY = import.meta.env.VITE_API_KEY;
-// export const SHEET_ID = import.meta.env.VITE_SHEET_ID;
+export const API_KEY = "AIzaSyDgIDCWpWFUeOyx0g8wuxbM-HDulR3saxk";
+export const SHEET_ID = "1n2JIJXDuPiv5y9IbKyQrROachf2W4pz8ADWcptsfLKc"
 
 if (!API_KEY) { throw new Error("API_KEY is not defined in .env");}
 if (!SHEET_ID) { throw new Error("SHEET_ID is not defined in .env");}
