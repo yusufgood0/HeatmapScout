@@ -54,5 +54,6 @@
       "*": ["./dist/*"]
     }
   },
-  "include": ["dist/**/*.ts", "dist/global.d.ts"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }
