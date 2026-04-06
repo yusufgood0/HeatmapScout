@@ -8,6 +8,7 @@
 // or, if using plain TS with a custom build script:
 export const API_KEY = "AIzaSyDgIDCWpWFUeOyx0g8wuxbM-HDulR3saxk";
 export const SHEET_ID = "1n2JIJXDuPiv5y9IbKyQrROachf2W4pz8ADWcptsfLKc"
+const BASE = import.meta.env.BASE_URL;
 
 if (!API_KEY) { throw new Error("API_KEY is not defined in .env");}
 if (!SHEET_ID) { throw new Error("SHEET_ID is not defined in .env");}
@@ -50,7 +51,7 @@ export interface VertexPoint {
 let translations: any;
 
 async function loadTranslations() {
-  translations = await fetch("/HeatmapScout/translations.json").then(r => r.json());
+  translations = await fetch(BASE + "translations.json").then(r => r.json());
   console.log("Translations loaded:", translations);
 }
 export function GetTranslations() {
@@ -299,7 +300,7 @@ function display(data: unknown) {
 
 // ===== CANVAS =====
 // ===== LOAD IMAGE =====
-function loadBackgroundImage(src: string = "./background.png"): Promise<HTMLImageElement> {
+function loadBackgroundImage(src: string = BASE + "background.png"): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.src = src;
