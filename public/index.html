@@ -251,15 +251,17 @@ canvas {
 
           value.split(", ").forEach(line => {
             const lineElem = document.createElement("div");
+
             if (line.includes(": ")) {
               const [key, val] = line.split(": ");
               const displayKey = translations?.options?.[title]?.[key] ?? key;
-              if (!displayKey) return; // skip if no translation
+              if (!displayKey) return; // skip if translation is empty
               lineElem.textContent = `${displayKey}: ${val}`;
             } else {
-            lineElem.textContent = line;
-            v.appendChild(lineElem);
+              lineElem.textContent = line;
             }
+
+            v.appendChild(lineElem);
           });
 
           item.appendChild(t);
