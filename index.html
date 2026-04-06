@@ -290,7 +290,7 @@ canvas {
 
 
       opacitySlider.addEventListener('input', () => {
-        opacityValue.textContent = opacitySlider.value.toFixed(2);
+        opacityValue.textContent = parseFloat(opacitySlider.value).toFixed(2);
       });
       title.textContent = `Team ${request.filter.value}`;
       document.title = `Team ${request.filter.value}`;
