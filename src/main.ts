@@ -26,8 +26,6 @@ const LINE_WIDTH = 20;
 const IMAGE_SCALE = 1200 / 800;
 
 
-// Optional: override full URL (leave null to auto-build)
-const CUSTOM_URL = null;
 // ===== TYPES =====
 
 interface SheetResponse {
@@ -156,8 +154,6 @@ export function DecodePolyline(str: string): VertexPoint[] {
     return (result & 1) ? ~(result >> 1) : (result >> 1);
   }
 }
-
-
 // ===== UTIL =====
 
 // Convert sheet rows → objects using header row
@@ -182,8 +178,6 @@ function rowsToObjects(rows: string[][], filter?: Filter | null) {
 
   return objects;
 }
-
-
 export function CompileAndAverage(
   records: Record<string, string>[]
 ): Record<string, string> {
@@ -336,8 +330,8 @@ function loadBackgroundImage(src: string = BASE + 'background.png'): Promise<HTM
 }
 
 // ===== REFRESH CANVAS =====
-export function ClearCanvas() {
-  const canvas = document.getElementById("myCanvas") as HTMLCanvasElement;
+export function ClearCanvas(Inputcanvas: HTMLCanvasElement | null = null) {
+  const canvas = Inputcanvas || document.getElementById("myCanvas") as HTMLCanvasElement;
   const ctx = canvas.getContext("2d");
   if (!canvas || !ctx) return;
 
@@ -358,11 +352,25 @@ export function DrawPaths(
 
   if (!ctx || paths.length === 0) return;
 
-  ClearCanvas();
+  // Create offscreen canvas
+  const tempCanvas = document.createElement("canvas");
+  tempCanvas.width = canvas.width;
+  tempCanvas.height = canvas.height;
 
+  const tempCtx = tempCanvas.getContext("2d");
+  if (!tempCtx) return;
+
+  // Clear temp canvas
+  ClearCanvas(tempCanvas);
+
+  // Draw everything to temp canvas
   paths.forEach(path => {
-    DrawPolyLineWithGradiant(path, ctx, pathData ?? null);
+    DrawPolyLineWithGradiant(path, tempCtx, pathData ?? null);
   });
+
+  // Copy temp canvas to real canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(tempCanvas, 0, 0);
 }
 
 interface PathData {
