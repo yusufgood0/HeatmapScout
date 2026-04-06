@@ -51,7 +51,7 @@ export interface VertexPoint {
 let translations: any;
 
 async function loadTranslations() {
-  translations = await fetch(BASE + "translations.json").then(r => r.json());
+  translations = await fetch(BASE + 'translations.json').then(r => r.json());
   console.log("Translations loaded:", translations);
 }
 export function GetTranslations() {
@@ -300,7 +300,7 @@ function display(data: unknown) {
 
 // ===== CANVAS =====
 // ===== LOAD IMAGE =====
-function loadBackgroundImage(src: string = BASE + "background.png"): Promise<HTMLImageElement> {
+function loadBackgroundImage(src: string = BASE + 'background.png'): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.src = src;
