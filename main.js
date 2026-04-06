@@ -1,3 +1,6 @@
+// disabled as it confuses github's secret scanning. Just remember to create a .env file with API_KEY and SHEET_ID defined when running this locally.
+// import dotenv from "dotenv";
+// dotenv.config(); // loads variables from .env into process.env
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,8 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import dotenv from "dotenv";
-dotenv.config(); // loads variables from .env into process.env
 const API_KEY = process.env.API_KEY;
 const SHEET_ID = process.env.SHEET_ID;
 if (!API_KEY) {
