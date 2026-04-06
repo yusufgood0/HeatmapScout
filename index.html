@@ -237,7 +237,7 @@ canvas {
       records.forEach(record => {
         Object.entries(record).forEach(([title, value]) => {
           let translations = GetTranslations();
-          if (!translations?.display?.[title]) return;
+          if (!translations?.display?.[title] || title.trim() === "" || data.trim() === "") return;
 
           const item = document.createElement("div");
           item.className = "infoItem";
