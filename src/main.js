@@ -4,8 +4,8 @@
  dotenv.config(); // loads variables from .env into process.env
 */
 // or, if using plain TS with a custom build script:
-export const API_KEY = import.meta.env.VITE_API_KEY || "";
-export const SHEET_ID = import.meta.env.VITE_SHEET_ID || "";
+export const API_KEY = import.meta.env.VITE_API_KEY;
+export const SHEET_ID = import.meta.env.VITE_SHEET_ID;
 if (!API_KEY) {
     throw new Error("API_KEY is not defined in .env");
 }
