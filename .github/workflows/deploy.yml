@@ -46,3 +46,8 @@ jobs:
           github_token: ${{ secrets.PAT_TOKEN }}
           publish_dir: ./dist
           keep_history: false  # optional, keeps gh-pages clean
+
+      # 8. Inject API key into config.ts for runtime access
+      - name: Inject API key
+        run: |
+          echo "export const API_KEY = '${{ secrets.API_KEY }}';" > src/config.ts
