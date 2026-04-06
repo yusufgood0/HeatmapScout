@@ -25,7 +25,7 @@ const IMAGE_SCALE = 1200 / 800;
 const CUSTOM_URL = null;
 let translations;
 async function loadTranslations() {
-    translations = await fetch("../translations.json").then(r => r.json());
+    translations = await fetch("./translations.json").then(r => r.json());
     console.log("Translations loaded:", translations);
 }
 export function GetTranslations() {
@@ -207,7 +207,7 @@ function display(data) {
 }
 // ===== CANVAS =====
 // ===== LOAD IMAGE =====
-function loadBackgroundImage(src = "public/background.png") {
+function loadBackgroundImage(src = "./background.png") {
     return new Promise((resolve, reject) => {
         const img = new Image();
         img.src = src;
