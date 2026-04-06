@@ -6,5 +6,11 @@
   },
   "dependencies": {
     "dotenv": "^17.4.1"
+  },
+  "scripts": {
+    "build": "tsc",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
+    "homepage": "https://yusufgood0.github.io/HeatmapScout/"
   }
 }
