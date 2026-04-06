@@ -207,7 +207,7 @@ function display(data) {
 }
 // ===== CANVAS =====
 // ===== LOAD IMAGE =====
-function loadBackgroundImage(src = "./background.png") {
+function loadBackgroundImage(src = "/background.png") {
     return new Promise((resolve, reject) => {
         const img = new Image();
         img.src = src;
