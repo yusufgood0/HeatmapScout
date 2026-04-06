@@ -10,7 +10,7 @@ export const API_KEY = "AIzaSyDgIDCWpWFUeOyx0g8wuxbM-HDulR3saxk";
 export const SHEET_ID = "1n2JIJXDuPiv5y9IbKyQrROachf2W4pz8ADWcptsfLKc"
 const BASE = typeof import.meta !== "undefined" && import.meta.env
   ? import.meta.env.BASE_URL
-  : "./";
+  : "./"; 
 
 if (!API_KEY) { throw new Error("API_KEY is not defined in .env");}
 if (!SHEET_ID) { throw new Error("SHEET_ID is not defined in .env");}
