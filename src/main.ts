@@ -4,7 +4,7 @@
  dotenv.config(); // loads variables from .env into process.env
 */
 // import { API_KEY, SHEET_ID } from "./config";
-
+//
 // or, if using plain TS with a custom build script:
 export const API_KEY = "AIzaSyDgIDCWpWFUeOyx0g8wuxbM-HDulR3saxk";
 export const SHEET_ID = "1n2JIJXDuPiv5y9IbKyQrROachf2W4pz8ADWcptsfLKc"
