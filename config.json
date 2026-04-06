@@ -1,0 +1,75 @@
+{
+    "display": {
+        "Scouter Initials": false,
+        "Match Number": false,
+        "Team Number": false,
+        "Starting Position": true,
+        "Autonomous Path": false,
+        "Moved?": true,
+        "Auto Climbed Tower": true,
+        "Auto Climb Side": true,
+        "Auto Foul": false,
+        "Lobbed Fuel?": true,
+        "Shoveled Fuel?": true,
+        "Played Defense?": true,
+        "Fed Human Player?": true,
+        "Endgame Climbed Tower": true,
+        "Endgame Climb Side": true,
+        "Comments?": false
+    },
+    "options": {
+        "Starting Position": {
+            "R": "Outpost Side",
+            "M": "Middle",
+            "L": "Depot Side"
+        },
+        "Auto Climbed Tower": {
+            "1": "Level 1",
+            "2": "Level 2",
+            "3": "Level 3",
+            "No": "Didn't Climb",
+            "F": "Failed Climb",
+            " ": null
+        },
+        "Auto Climb Side": {
+            "L": "Depot Side",
+            "R": "Outpost Side",
+            " ": null
+        },
+        "Shoveled Fuel?": {
+            "N": "None",
+            "F": "Few",
+            "M": "Many"
+        },
+        "Lobbed Fuel?": {
+            "N": "None",
+            "F": "Few",
+            "M": "Many"
+        },
+        "Endgame Climbed Tower": {
+            "1": "Level 1",
+            "2": "Level 2",
+            "3": "Level 3",
+            "No": "Didn't Climb",
+            "F": "Failed Climb",
+            " ": null
+        },
+        "Endgame Climb Side": {
+            "L": "Depot Side",
+            "R": "Outpost Side",
+            " ": null
+        },
+        "Intake": {
+            "G": "Ground",
+            "O": "Outpost",
+            " ": null
+        },
+        "Over/Under?": {
+            "O": "Over the Bump",
+            "U": "Under the Trench",
+            "B": "Both",
+            "N": "Neither",
+            " ": null
+        }
+    }
+}
