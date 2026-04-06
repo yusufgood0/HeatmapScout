@@ -183,7 +183,7 @@ canvas {
   <div class="controls">
     <div class="input-group">
       <label for="myInput">Team Number</label>
-      <input type="number" id="myInput" placeholder="Team Number..." />
+      <input type="number" id="myInput" placeholder="Team Number...", value="4907" />
     </div>
 
     <div class="input-group">
@@ -232,6 +232,7 @@ canvas {
     const infoList = document.getElementById('infoList'); // NEW: panel container
 
     function renderInfo(data) {
+      
       infoList.innerHTML = "";
       const records = Array.isArray(data) ? data : [data]; // ensure array
       records.forEach(record => {
@@ -270,11 +271,6 @@ canvas {
         });
       });
     }
-
-    opacitySlider.addEventListener('input', () => {
-        opacityValue.textContent = parseFloat(opacitySlider.value).toFixed(2);
-      });
-
     button.addEventListener('click', () => {
       const request = { 
         filter: { value: input.value } 
@@ -304,6 +300,13 @@ canvas {
       title.textContent = `Team ${request.filter.value}`;
       document.title = `Team ${request.filter.value}`;
     });
+    button.click(); // Trigger initial load with default team number
+
+    opacitySlider.addEventListener('input', () => {
+        opacityValue.textContent = parseFloat(opacitySlider.value).toFixed(2);
+      });
+
+    
   </script>
   
   <script>
