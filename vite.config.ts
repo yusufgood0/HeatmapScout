@@ -23,6 +23,14 @@ export default defineConfig({
       workbox: {
         // Cache everything inside dist
         globPatterns: ['**/*.{js,css,html,png,json,svg}'],
+
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/example\.com\/api\//,
+            handler: 'NetworkFirst',
+            options: { cacheName: 'api-cache' },
+          },
+        ],
       },
     })
   ],
