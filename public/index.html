@@ -3,7 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Team Canvas</title>
+<title>HeatsmapScout</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a237e">
+
+
+<meta name="apple-mobile-web-app-capable" content="yes"> <!-- Makes app open standalone on iOS -->
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> <!-- iOS status bar style -->
+
 <style>
   * {
   box-sizing: border-box;
@@ -281,11 +289,21 @@ canvas {
       })
 
 
-
+      opacitySlider.addEventListener('input', () => {
+        opacityValue.textContent = opacitySlider.value;
+      });
       title.textContent = `Team ${request.filter.value}`;
       document.title = `Team ${request.filter.value}`;
     });
   </script>
   
+  <script>
+  // Register service worker for offline & homescreen
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./service-worker.js')
+      .then(reg => console.log('Service worker registered', reg))
+      .catch(err => console.log('Service worker failed', err));
+  }
+</script>
 </body>
 </html>
