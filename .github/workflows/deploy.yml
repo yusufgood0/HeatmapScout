@@ -1,31 +1,48 @@
-name: Deploy PWA to GitHub Pages
+name: Build and Deploy PWA
 
 on:
   push:
     branches:
-      - main  # run on every push to main
+      - main  # triggers on every push to main
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      # 1. Checkout repo
+      - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2. Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20  # or your Node.js version
+          node-version: 20
 
+      # 3. Install dependencies
       - name: Install dependencies
         run: npm install
 
+      # 4. Build TypeScript project
       - name: Build project
         run: npm run build
 
+      # 5. Copy static files into dist/
+      - name: Copy public files
+        run: |
+          cp -r public/* dist/
+
+      # 6. Remove unnecessary TS declaration files
+      - name: Remove TS declaration files
+        run: |
+          find dist -name "*.d.ts" -type f -delete
+          find dist -name "*.d.ts.map" -type f -delete
+
+      # 7. Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+        uses: peaceiris/actions-gh-pages@v5
         with:
-          github_token: ${{ secrets.PAT_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
+          keep_history: false  # optional, keeps gh-pages clean
