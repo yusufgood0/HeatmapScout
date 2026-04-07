@@ -76,7 +76,7 @@ function hexToRgb(hex: string | { r: number, g: number, b: number }): { r: numbe
   return { r, g, b }; // object with r, g, b values
 }
 
-function DrawPolyLineWithGradiant(
+function DrawPolyLineWithGradient(
   points: VertexPoint[],
   ctx: CanvasRenderingContext2D,
   pathData: PathData | null
@@ -178,6 +178,8 @@ function rowsToObjects(rows: string[][], filter?: Filter | null) {
 
   return objects;
 }
+
+
 export function CompileAndAverage(
   records: Record<string, string>[]
 ): Record<string, string> {
@@ -257,9 +259,8 @@ export async function FetchSheetData(
   }
 
   const cachedData = await GetCachedSheetData(url);
-  const filter = requestInput.filter ?? null;
 
-  if (cachedData) return filter ? cachedData.filter(row => row[filter.key] === filter.value) : cachedData;
+  if (cachedData) return cachedData;
 
   return null;
 }
@@ -321,57 +322,51 @@ async function GetCachedSheetData(url: string): Promise<Record<string, string>[]
 }
 // ===== CANVAS =====
 // ===== LOAD IMAGE =====
+// ===== LOAD IMAGE =====
 function loadBackgroundImage(src: string = BASE + 'background.png'): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.src = src;
     img.onload = () => resolve(img);
-    img.onerror = reject;
+    img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
   });
 }
 
-// ===== REFRESH CANVAS =====
-export function ClearCanvas(Inputcanvas: HTMLCanvasElement | null = null) {
-  const canvas = Inputcanvas || document.getElementById("myCanvas") as HTMLCanvasElement;
+// ===== CLEAR CANVAS =====
+export async function ClearCanvas(): Promise<void> {
+  const canvas = document.getElementById("myCanvas") as HTMLCanvasElement;
+  if (!canvas) return;
   const ctx = canvas.getContext("2d");
-  if (!canvas || !ctx) return;
+  if (!ctx) return;
 
-  loadBackgroundImage().then(img => {
+  try {
+    const img = await loadBackgroundImage();
     const aspectRatio = img.height / img.width;
     canvas.height = canvas.width * aspectRatio;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-  });
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 // ===== DRAW PATHS =====
-export function DrawPaths(
+export async function DrawPaths(
   paths: VertexPoint[][],
   pathData: PathData | null
 ) {
   const canvas = document.getElementById("myCanvas") as HTMLCanvasElement;
+  if (!canvas || paths.length === 0) return;
   const ctx = canvas.getContext("2d");
+  if (!ctx) return;
 
-  if (!ctx || paths.length === 0) return;
+  // Make sure background is loaded and drawn first
+  await ClearCanvas();
 
-  // Create offscreen canvas
-  const tempCanvas = document.createElement("canvas");
-  tempCanvas.width = canvas.width;
-  tempCanvas.height = canvas.height;
-
-  const tempCtx = tempCanvas.getContext("2d");
-  if (!tempCtx) return;
-
-  // Clear temp canvas
-  ClearCanvas(tempCanvas);
-
-  // Draw everything to temp canvas
   paths.forEach(path => {
-    DrawPolyLineWithGradiant(path, tempCtx, pathData ?? null);
+    // Make sure your function name matches
+    DrawPolyLineWithGradient(path, ctx, pathData ?? null);
   });
-
-  // Copy temp canvas to real canvas
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(tempCanvas, 0, 0);
 }
 
 interface PathData {
