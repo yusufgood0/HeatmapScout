@@ -244,7 +244,7 @@ export function CompileAndAverage(
 }
 
 // ===== MAIN FETCH =====
-async function FetchSheetData(requestInput: SheetRequest): Promise<Record<string, string>[] | null> {
+export async function FetchSheetData(requestInput: SheetRequest): Promise<Record<string, string>[] | null> {
   const url = FormatUrl(requestInput);
   const filter: Filter | null = requestInput.filter ?? null;
 
