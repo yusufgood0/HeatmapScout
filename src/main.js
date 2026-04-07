@@ -173,17 +173,15 @@ export function CompileAndAverage(records) {
 // ===== MAIN FETCH =====
 export async function FetchSheetData(requestInput) {
     const url = FormatUrl(requestInput);
-    const filter = requestInput.filter ?? null;
-    const parsed = await FetchSheetDataFromNetwork(requestInput);
+    const parsed = await FetchSheetDataFromNetwork(url);
     if (parsed) {
-        await SetCachedSheetData(url, parsed); // Store full sheet unfiltered
+        await SetCachedSheetData(url, parsed); // Update cache with fresh data
         return parsed;
     }
     const cachedData = await GetCachedSheetData(url);
-    if (cachedData) {
-        // Apply filter here!
+    const filter = requestInput.filter ?? null;
+    if (cachedData)
         return filter ? cachedData.filter(row => row[filter.key] === filter.value) : cachedData;
-    }
     return null;
 }
 async function FetchSheetDataFromNetwork(requestInput) {
