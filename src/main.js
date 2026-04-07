@@ -221,7 +221,7 @@ async function SetCachedSheetData(url, data) {
     }
 }
 async function GetCachedSheetData(requestInput) {
-    requestInput = {
+    const request = {
         range: requestInput.range ?? RANGE,
         APIkey: requestInput.APIkey ?? API_KEY,
         sheetID: requestInput.sheetID ?? SHEET_ID,
@@ -231,10 +231,10 @@ async function GetCachedSheetData(requestInput) {
     if ("caches" in window) {
         try {
             const cache = await caches.open("sheet-data-cache");
-            const cachedResponse = await cache.match(FormatUrl(requestInput));
+            const cachedResponse = await cache.match(FormatUrl(request));
             if (cachedResponse) {
                 const cachedData = await cachedResponse.json();
-                return ApplyFilter(cachedData, requestInput.filter);
+                return ApplyFilter(cachedData, request.filter);
             }
         }
         catch {

@@ -176,7 +176,7 @@ canvas {
 </style>
 </head>
 <body>
-  <h1 id="AppTitle">HeatmapScout v1.1.14</h1>
+  <h1 id="AppTitle">HeatmapScout v1.1.15</h1>
   <h2 id="teamTitle">Enter Team Number</h2>
 
   <!-- Horizontal control panel -->
@@ -309,10 +309,7 @@ canvas {
 
         if (!input.value) return;
 
-        const request = { 
-          filter: { value: input.value } 
-        };
-        ImportAndDrawPathFromCache(request, {
+        ImportAndDrawPathFromCache(input.value, {
           color1: startColorInput.value,
           color2: endColorInput.value,
           opacity: parseFloat(opacitySlider.value)
