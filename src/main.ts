@@ -178,7 +178,7 @@ function rowsToObjects(rows: string[][], filter?: Filter | null) {
 
   return objects;
 }
-function ApplyFilter(records: Record<string, string>[] | null, filter: Filter | null | undefined): Record<string, string>[] {
+function ApplyFilter(records: Record<string, string>[] | null, filter: Filter | undefined): Record<string, string>[] {
   if (!filter || !records) return records ?? [];
   return records.filter(r => r[filter.key] === String(filter.value));
 }
@@ -254,20 +254,20 @@ export async function FetchSheetData(
 ): Promise<Record<string, string>[] | null> {
 
   const url = FormatUrl(requestInput);
-  const parsed = await FetchSheetDataFromNetwork(url);
+  const parsed = await FetchSheetDataFromNetwork(requestInput);
 
   if (parsed) {
     await SetCachedSheetData(url, parsed); // Update cache with fresh data
     return parsed;
   }
 
-  const cachedData = await GetCachedSheetData(url);
+  const cachedData = await GetCachedSheetData(requestInput.filter);
 
   if (cachedData) return cachedData;
 
   return null;
 }
-async function FetchSheetDataFromNetwork(requestInput: SheetRequest | string): Promise<Record<string, string>[] | null> {
+async function FetchSheetDataFromNetwork(requestInput: SheetRequest): Promise<Record<string, string>[] | null> {
   try {
 
     const url = (typeof requestInput === "string")
@@ -306,7 +306,7 @@ async function SetCachedSheetData(url: string, data: Record<string, string>[]) {
     await cache.put(url, responseToCache);
   }
 }
-async function GetCachedSheetData(url: string): Promise<Record<string, string>[] | null> {
+async function GetCachedSheetData(filter: Filter | undefined): Promise<Record<string, string>[] | null> {
   // Try to use cached version
   if ("caches" in window) {
     try {
@@ -315,7 +315,7 @@ async function GetCachedSheetData(url: string): Promise<Record<string, string>[]
       if (cachedResponse) {
         const cachedData = await cachedResponse.json();
         console.log("Using cached sheet data.");
-        return cachedData as Record<string, string>[];
+        return ApplyFilter(cachedData as Record<string, string>[] | null, filter);
       }
     } catch (cacheErr) {
       console.warn("No cached sheet data available:", cacheErr);
@@ -410,9 +410,9 @@ export function ImportAndDrawPathFromCache(teamNumber: number = -1, pathData: Pa
     filter: { key: TEAMNUMBERHEADER, value: teamNumber },
   };
 
-  GetCachedSheetData(FormatUrl(request)).then(i =>
+  GetCachedSheetData(request.filter).then(i =>
     DrawPaths(
-      FormatAutonomousPaths(ApplyFilter(i, request.filter)),
+      FormatAutonomousPaths(i),
       pathData
     )
   );
