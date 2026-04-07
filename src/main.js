@@ -171,7 +171,7 @@ export function CompileAndAverage(records) {
     return result;
 }
 // ===== MAIN FETCH =====
-async function FetchSheetData(requestInput) {
+export async function FetchSheetData(requestInput) {
     const url = FormatUrl(requestInput);
     const filter = requestInput.filter ?? null;
     const parsed = await FetchSheetDataFromNetwork(requestInput);
