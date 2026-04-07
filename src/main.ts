@@ -173,12 +173,15 @@ function rowsToObjects(rows: string[][], filter?: Filter | null) {
   });
 
   if (filter) {
-    return objects.filter(obj => obj[filter.key ?? TEAMNUMBERHEADER] === String(filter.value));
+    return ApplyFilter(objects, filter);
   }
 
   return objects;
 }
-
+function ApplyFilter(records: Record<string, string>[] | null, filter: Filter | null | undefined): Record<string, string>[] {
+  if (!filter || !records) return records ?? [];
+  return records.filter(r => r[filter.key] === String(filter.value));
+}
 
 export function CompileAndAverage(
   records: Record<string, string>[]
@@ -409,7 +412,7 @@ export function ImportAndDrawPathFromCache(teamNumber: number = -1, pathData: Pa
 
   GetCachedSheetData(FormatUrl(request)).then(i =>
     DrawPaths(
-      FormatAutonomousPaths(i),
+      FormatAutonomousPaths(ApplyFilter(i, request.filter)),
       pathData
     )
   );
