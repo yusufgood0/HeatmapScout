@@ -178,12 +178,12 @@ export function CompileAndAverage(records) {
 // ===== MAIN FETCH =====
 export async function FetchSheetData(requestInput) {
     const url = FormatUrl(requestInput);
-    const parsed = await FetchSheetDataFromNetwork(url);
+    const parsed = await FetchSheetDataFromNetwork(requestInput);
     if (parsed) {
         await SetCachedSheetData(url, parsed); // Update cache with fresh data
         return parsed;
     }
-    const cachedData = await GetCachedSheetData(url);
+    const cachedData = await GetCachedSheetData(requestInput.filter);
     if (cachedData)
         return cachedData;
     return null;
@@ -222,7 +222,7 @@ async function SetCachedSheetData(url, data) {
         await cache.put(url, responseToCache);
     }
 }
-async function GetCachedSheetData(url) {
+async function GetCachedSheetData(filter) {
     // Try to use cached version
     if ("caches" in window) {
         try {
@@ -231,7 +231,7 @@ async function GetCachedSheetData(url) {
             if (cachedResponse) {
                 const cachedData = await cachedResponse.json();
                 console.log("Using cached sheet data.");
-                return cachedData;
+                return ApplyFilter(cachedData, filter);
             }
         }
         catch (cacheErr) {
@@ -310,7 +310,7 @@ export function ImportAndDrawPathFromCache(teamNumber = -1, pathData = null) {
         sheetName: SHEET_NAME,
         filter: { key: TEAMNUMBERHEADER, value: teamNumber },
     };
-    GetCachedSheetData(FormatUrl(request)).then(i => DrawPaths(FormatAutonomousPaths(ApplyFilter(i, request.filter)), pathData));
+    GetCachedSheetData(request.filter).then(i => DrawPaths(FormatAutonomousPaths(i), pathData));
 }
 function FormatAutonomousPaths(records) {
     return records?.map(x => DecodePolyline(x["Autonomous Path"] ?? "")) || [];
