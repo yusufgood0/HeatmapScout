@@ -183,7 +183,7 @@ export async function FetchSheetData(requestInput) {
         await SetCachedSheetData(url, parsed); // Update cache with fresh data
         return parsed;
     }
-    const cachedData = await GetCachedSheetData(requestInput.filter);
+    const cachedData = await GetCachedSheetData(requestInput);
     if (cachedData)
         return cachedData;
     return null;
@@ -219,20 +219,18 @@ async function SetCachedSheetData(url, data) {
         await cache.put(url, responseToCache);
     }
 }
-async function GetCachedSheetData(filter) {
-    // Try to use cached version
+async function GetCachedSheetData(requestInput) {
     if ("caches" in window) {
         try {
             const cache = await caches.open("sheet-data-cache");
-            const cachedResponse = await cache.match(url);
+            const cachedResponse = await cache.match(FormatUrl(requestInput));
             if (cachedResponse) {
                 const cachedData = await cachedResponse.json();
-                console.log("Using cached sheet data.");
-                return ApplyFilter(cachedData, filter);
+                return ApplyFilter(cachedData, requestInput.filter);
             }
         }
-        catch (cacheErr) {
-            console.warn("No cached sheet data available:", cacheErr);
+        catch {
+            return null;
         }
     }
     return null;
@@ -307,7 +305,7 @@ export function ImportAndDrawPathFromCache(teamNumber = -1, pathData = null) {
         sheetName: SHEET_NAME,
         filter: { key: TEAMNUMBERHEADER, value: teamNumber },
     };
-    GetCachedSheetData(request.filter).then(i => DrawPaths(FormatAutonomousPaths(i), pathData));
+    GetCachedSheetData(request).then(i => DrawPaths(FormatAutonomousPaths(i), pathData));
 }
 function FormatAutonomousPaths(records) {
     return records?.map(x => DecodePolyline(x["Autonomous Path"] ?? "")) || [];
