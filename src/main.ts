@@ -179,6 +179,7 @@ function rowsToObjects(rows: string[][], filter?: Filter | null) {
   return objects;
 }
 function ApplyFilter(records: Record<string, string>[] | null, filter: Filter | undefined): Record<string, string>[] {
+  console.log("Applying filter:", filter, "to records:", records);
   if (!filter || !records) return records ?? [];
   return records.filter(r => r[filter.key] === String(filter.value));
 }
