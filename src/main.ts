@@ -8,16 +8,12 @@
 
 // or, if using plain TS with a custom build script:
 export const API_KEY = "AIzaSyDgIDCWpWFUeOyx0g8wuxbM-HDulR3saxk";
-export const SHEET_ID = "1n2JIJXDuPiv5y9IbKyQrROachf2W4pz8ADWcptsfLKc"
+export const SHEET_ID = "1lHqPJzj-8VfT6jItIfJHOY4dgtkqG3uo5kuZVTXDTi8"
 const BASE = (import.meta as any)?.env?.BASE_URL ?? "./";
 
 if (!API_KEY) { throw new Error("API_KEY is not defined in .env"); }
 if (!SHEET_ID) { throw new Error("SHEET_ID is not defined in .env"); }
 console.log("API_KEY and SHEET_ID loaded successfully");
-
-
-const url =
-  `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Sheet1?key=${API_KEY}`;
 
 const SHEET_NAME = "RawScouterData";
 const RANGE = "A1:AA"; // change as needed
