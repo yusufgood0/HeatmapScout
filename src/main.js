@@ -128,7 +128,7 @@ function ApplyFilter(records, filter) {
     console.log("Applying filter:", filter, "to records:", records);
     if (!filter || !records)
         return records ?? [];
-    return records.filter(r => r[filter.key] === String(filter.value));
+    return records.filter(r => filter.key == String(filter.value));
 }
 export function CompileAndAverage(records) {
     const result = {};
