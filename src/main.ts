@@ -270,9 +270,7 @@ export async function FetchSheetData(
 async function FetchSheetDataFromNetwork(requestInput: SheetRequest): Promise<Record<string, string>[] | null> {
   try {
 
-    const url = (typeof requestInput === "string")
-      ? requestInput
-      : FormatUrl(requestInput);
+    const url = FormatUrl(requestInput);
 
     const response = await fetch(url);
 
@@ -282,9 +280,7 @@ async function FetchSheetDataFromNetwork(requestInput: SheetRequest): Promise<Re
 
     const data: SheetResponse = await response.json();
 
-    const filter: Filter | null = typeof requestInput === "object" ? requestInput.filter ?? null : null;
-
-    return rowsToObjects(data.values, filter);
+    return rowsToObjects(data.values, requestInput.filter);
   } catch (err) {
     console.error("Network fetch failed:", err);
     return null;
