@@ -125,6 +125,7 @@ function rowsToObjects(rows, filter) {
     return objects;
 }
 function ApplyFilter(records, filter) {
+    console.log("Applying filter:", filter, "to records:", records);
     if (!filter || !records)
         return records ?? [];
     return records.filter(r => r[filter.key] === String(filter.value));
