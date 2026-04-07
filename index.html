@@ -320,10 +320,10 @@ canvas {
     // Register service worker for offline & homescreen
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./service-worker.js')
-        .then(reg => console.log('Service worker registered', reg).and(registration => {
+        .then(reg => console.log('Service worker registered', reg)
+        .catch(err => console.log('Service worker failed', err))).and(registration => {
           button.click();
-        }))
-        .catch(err => console.log('Service worker failed', err));
+        });
     }
     
   </script>
