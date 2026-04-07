@@ -120,9 +120,14 @@ function rowsToObjects(rows, filter) {
         return obj;
     });
     if (filter) {
-        return objects.filter(obj => obj[filter.key ?? TEAMNUMBERHEADER] === String(filter.value));
+        return ApplyFilter(objects, filter);
     }
     return objects;
+}
+function ApplyFilter(records, filter) {
+    if (!filter || !records)
+        return records ?? [];
+    return records.filter(r => r[filter.key] === String(filter.value));
 }
 export function CompileAndAverage(records) {
     const result = {};
@@ -305,7 +310,7 @@ export function ImportAndDrawPathFromCache(teamNumber = -1, pathData = null) {
         sheetName: SHEET_NAME,
         filter: { key: TEAMNUMBERHEADER, value: teamNumber },
     };
-    GetCachedSheetData(FormatUrl(request)).then(i => DrawPaths(FormatAutonomousPaths(i), pathData));
+    GetCachedSheetData(FormatUrl(request)).then(i => DrawPaths(FormatAutonomousPaths(ApplyFilter(i, request.filter)), pathData));
 }
 function FormatAutonomousPaths(records) {
     return records?.map(x => DecodePolyline(x["Autonomous Path"] ?? "")) || [];
