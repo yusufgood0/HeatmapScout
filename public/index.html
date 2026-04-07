@@ -216,8 +216,6 @@ canvas {
     
 
 
-    import { ImportAndDrawPath } from './src/main.js';
-    import { ClearCanvas } from './src/main.js';
     import { GetDisplayData } from './src/main.js'; // NEW: function returning dictionary
     import { FetchSheetData } from './src/main.js'; // NEW: function returning dictionary
     import { DrawPaths } from './src/main.js'; // NEW: function returning dictionary
@@ -292,6 +290,7 @@ canvas {
           i?.map(x => DecodePolyline(x["Autonomous Path"] ?? "")) || [],
           pathData
         )
+
         const displayData = CompileAndAverage(i); // NEW: get dictionary for panel
         let translations = GetTranslations(); // NEW: get translations dictionary
 
@@ -305,16 +304,18 @@ canvas {
 
     
     opacitySlider.addEventListener('input', () => {
-        if (opacityValue.textContent == parseFloat(opacitySlider.value).toFixed(2)) return;
-        opacityValue.textContent = parseFloat(opacitySlider.value).toFixed(2);
+        const opacity = parseFloat(opacitySlider.value).toFixed(2);
+        if (opacityValue.textContent == opacity) return;
+        
+        opacityValue.textContent = opacity;
 
-        if (input.value){
-          ImportAndDrawPathFromCache(input.value, {
-            color1: startColorInput.value,
-            color2: endColorInput.value,
-            opacity: parseFloat(opacitySlider.value)
-          });
-        }
+        if (!input.value) return;
+
+        ImportAndDrawPathFromCache(input.value, {
+          color1: startColorInput.value,
+          color2: endColorInput.value,
+          opacity: parseFloat(opacitySlider.value)
+        });
       });
 
     

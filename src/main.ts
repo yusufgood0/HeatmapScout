@@ -244,21 +244,21 @@ export function CompileAndAverage(
 }
 
 // ===== MAIN FETCH =====
-export async function FetchSheetData(
-  requestInput: SheetRequest
-): Promise<Record<string, string>[] | null> {
-
+async function FetchSheetData(requestInput: SheetRequest): Promise<Record<string, string>[] | null> {
   const url = FormatUrl(requestInput);
-  const parsed = await FetchSheetDataFromNetwork(url);
+  const filter: Filter | null = requestInput.filter ?? null;
 
+  const parsed = await FetchSheetDataFromNetwork(requestInput);
   if (parsed) {
-    await SetCachedSheetData(url, parsed); // Update cache with fresh data
+    await SetCachedSheetData(url, parsed); // Store full sheet unfiltered
     return parsed;
   }
 
   const cachedData = await GetCachedSheetData(url);
-
-  if (cachedData) return cachedData;
+  if (cachedData) {
+    // Apply filter here!
+    return filter ? cachedData.filter(row => row[filter.key] === filter.value) : cachedData;
+  }
 
   return null;
 }
