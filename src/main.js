@@ -190,16 +190,13 @@ export async function FetchSheetData(requestInput) {
 }
 async function FetchSheetDataFromNetwork(requestInput) {
     try {
-        const url = (typeof requestInput === "string")
-            ? requestInput
-            : FormatUrl(requestInput);
+        const url = FormatUrl(requestInput);
         const response = await fetch(url);
         if (!response.ok) {
             throw new Error(`HTTP error ${response.status}`);
         }
         const data = await response.json();
-        const filter = typeof requestInput === "object" ? requestInput.filter ?? null : null;
-        return rowsToObjects(data.values, filter);
+        return rowsToObjects(data.values, requestInput.filter);
     }
     catch (err) {
         console.error("Network fetch failed:", err);
