@@ -309,7 +309,10 @@ canvas {
 
         if (!input.value) return;
 
-        ImportAndDrawPathFromCache(input.value, {
+        const request = { 
+          filter: { value: input.value } 
+        };
+        ImportAndDrawPathFromCache(request, {
           color1: startColorInput.value,
           color2: endColorInput.value,
           opacity: parseFloat(opacitySlider.value)

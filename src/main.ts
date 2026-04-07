@@ -181,7 +181,7 @@ function rowsToObjects(rows: string[][], filter?: Filter | null) {
 function ApplyFilter(records: Record<string, string>[] | null, filter: Filter | undefined): Record<string, string>[] {
   console.log("Applying filter:", filter, "to records:", records);
   if (!filter || !records) return records ?? [];
-  return records.filter(r => filter.key == String(filter.value));
+  return records.filter(r => String(r[filter.key ?? TEAMNUMBERHEADER]) === String(filter.value));
 }
 
 export function CompileAndAverage(
@@ -306,6 +306,14 @@ async function SetCachedSheetData(url: string, data: Record<string, string>[]) {
 async function GetCachedSheetData(
   requestInput: SheetRequest
 ): Promise<Record<string, string>[] | null> {
+  requestInput = {
+    range: requestInput.range ?? RANGE,
+    APIkey: requestInput.APIkey ?? API_KEY,
+    sheetID: requestInput.sheetID ?? SHEET_ID,
+    sheetName: requestInput.sheetName ?? SHEET_NAME,
+    filter: { key: requestInput.filter?.key ?? TEAMNUMBERHEADER, value: requestInput.filter?.value ?? "" }
+  };
+
   if ("caches" in window) {
     try {
       const cache = await caches.open("sheet-data-cache");
