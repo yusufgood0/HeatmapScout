@@ -46,7 +46,7 @@ function hexToRgb(hex) {
     const b = bigint & 255;
     return { r, g, b }; // object with r, g, b values
 }
-function DrawPolyLineWithGradiant(points, ctx, pathData) {
+function DrawPolyLineWithGradient(points, ctx, pathData) {
     if (points.length < 2)
         return;
     const color1 = hexToRgb(pathData?.color1 ?? "#ff3c00");
@@ -179,9 +179,8 @@ export async function FetchSheetData(requestInput) {
         return parsed;
     }
     const cachedData = await GetCachedSheetData(url);
-    const filter = requestInput.filter ?? null;
     if (cachedData)
-        return filter ? cachedData.filter(row => row[filter.key] === filter.value) : cachedData;
+        return cachedData;
     return null;
 }
 async function FetchSheetDataFromNetwork(requestInput) {
@@ -238,48 +237,48 @@ async function GetCachedSheetData(url) {
 }
 // ===== CANVAS =====
 // ===== LOAD IMAGE =====
+// ===== LOAD IMAGE =====
 function loadBackgroundImage(src = BASE + 'background.png') {
     return new Promise((resolve, reject) => {
         const img = new Image();
         img.src = src;
         img.onload = () => resolve(img);
-        img.onerror = reject;
+        img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
     });
 }
-// ===== REFRESH CANVAS =====
-export function ClearCanvas(Inputcanvas = null) {
-    const canvas = Inputcanvas || document.getElementById("myCanvas");
-    const ctx = canvas.getContext("2d");
-    if (!canvas || !ctx)
+// ===== CLEAR CANVAS =====
+export async function ClearCanvas() {
+    const canvas = document.getElementById("myCanvas");
+    if (!canvas)
         return;
-    loadBackgroundImage().then(img => {
+    const ctx = canvas.getContext("2d");
+    if (!ctx)
+        return;
+    try {
+        const img = await loadBackgroundImage();
         const aspectRatio = img.height / img.width;
         canvas.height = canvas.width * aspectRatio;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    });
+    }
+    catch (err) {
+        console.error(err);
+    }
 }
 // ===== DRAW PATHS =====
-export function DrawPaths(paths, pathData) {
+export async function DrawPaths(paths, pathData) {
     const canvas = document.getElementById("myCanvas");
+    if (!canvas || paths.length === 0)
+        return;
     const ctx = canvas.getContext("2d");
-    if (!ctx || paths.length === 0)
+    if (!ctx)
         return;
-    // Create offscreen canvas
-    const tempCanvas = document.createElement("canvas");
-    tempCanvas.width = canvas.width;
-    tempCanvas.height = canvas.height;
-    const tempCtx = tempCanvas.getContext("2d");
-    if (!tempCtx)
-        return;
-    // Clear temp canvas
-    ClearCanvas(tempCanvas);
-    // Draw everything to temp canvas
+    // Make sure background is loaded and drawn first
+    await ClearCanvas();
     paths.forEach(path => {
-        DrawPolyLineWithGradiant(path, tempCtx, pathData ?? null);
+        // Make sure your function name matches
+        DrawPolyLineWithGradient(path, ctx, pathData ?? null);
     });
-    // Copy temp canvas to real canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(tempCanvas, 0, 0);
 }
 // ===== INIT =====
 export function ImportAndDrawPath(teamNumber = -1, pathData = null) {
