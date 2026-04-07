@@ -261,7 +261,7 @@ export async function FetchSheetData(
     return parsed;
   }
 
-  const cachedData = await GetCachedSheetData(requestInput.filter);
+  const cachedData = await GetCachedSheetData(requestInput);
 
   if (cachedData) return cachedData;
 
@@ -302,19 +302,19 @@ async function SetCachedSheetData(url: string, data: Record<string, string>[]) {
     await cache.put(url, responseToCache);
   }
 }
-async function GetCachedSheetData(filter: Filter | undefined): Promise<Record<string, string>[] | null> {
-  // Try to use cached version
+async function GetCachedSheetData(
+  requestInput: SheetRequest
+): Promise<Record<string, string>[] | null> {
   if ("caches" in window) {
     try {
       const cache = await caches.open("sheet-data-cache");
-      const cachedResponse = await cache.match(url);
+      const cachedResponse = await cache.match(FormatUrl(requestInput));
       if (cachedResponse) {
         const cachedData = await cachedResponse.json();
-        console.log("Using cached sheet data.");
-        return ApplyFilter(cachedData as Record<string, string>[] | null, filter);
+        return ApplyFilter(cachedData, requestInput.filter);
       }
-    } catch (cacheErr) {
-      console.warn("No cached sheet data available:", cacheErr);
+    } catch {
+      return null;
     }
   }
   return null;
@@ -406,7 +406,7 @@ export function ImportAndDrawPathFromCache(teamNumber: number = -1, pathData: Pa
     filter: { key: TEAMNUMBERHEADER, value: teamNumber },
   };
 
-  GetCachedSheetData(request.filter).then(i =>
+  GetCachedSheetData(request).then(i =>
     DrawPaths(
       FormatAutonomousPaths(i),
       pathData
