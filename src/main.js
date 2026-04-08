@@ -179,7 +179,7 @@ export function CompileAndAverage(records) {
 export async function FetchSheetData(requestInput) {
     const url = FormatUrl(requestInput);
     const parsed = await FetchSheetDataFromNetwork(requestInput);
-    if (parsed) {
+    if (parsed != null) {
         await SetCachedSheetData(url, parsed); // Update cache with fresh data
         return parsed;
     }
@@ -244,14 +244,17 @@ async function GetCachedSheetData(requestInput) {
 }
 // ===== CANVAS =====
 // ===== LOAD IMAGE =====
-// ===== LOAD IMAGE =====
+var backgroundImage = loadBackgroundImage();
 function loadBackgroundImage(src = BASE + 'background.png') {
-    return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.src = src;
-        img.onload = () => resolve(img);
-        img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
-    });
+    if (!backgroundImage) {
+        backgroundImage = new Promise((resolve, reject) => {
+            const img = new Image();
+            img.src = src;
+            img.onload = () => resolve(img);
+            img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
+        });
+    }
+    return backgroundImage;
 }
 // ===== CLEAR CANVAS =====
 export async function ClearCanvas() {
